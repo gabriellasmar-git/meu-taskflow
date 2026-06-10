@@ -7,7 +7,7 @@ import { useAuth } from "../hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { User, Mail, Lock, Sparkles, ArrowRight } from "lucide-react";
+import { User, Mail, Lock, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 const registerSchema = z.object({
@@ -26,7 +26,7 @@ const registerSchema = z.object({
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
 /**
- * Componente do formulário de cadastro, projetado com uma interface limpa, moderna e foca em UX.
+ * Componente do formulário de cadastro com espaçamento correto pl-10 para evitar sobreposição de texto nos ícones.
  */
 export const RegisterForm = () => {
   const { register } = useAuth();
@@ -43,7 +43,7 @@ export const RegisterForm = () => {
         fullName: data.fullName 
       });
     } catch (error) {
-      // Erro tratado internamente pelo useAuth
+      // Erro tratado no hook
     }
   };
 
@@ -58,11 +58,11 @@ export const RegisterForm = () => {
             <FormItem>
               <FormLabel className="text-slate-700 font-medium">Nome Completo</FormLabel>
               <FormControl>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 h-5 w-5" />
+                <div className="relative flex items-center">
+                  <User className="absolute left-3 text-slate-400 h-5 w-5 pointer-events-none z-10" />
                   <Input 
                     placeholder="Seu nome" 
-                    className="pl-10 h-11 border-slate-200 focus-visible:ring-indigo-500 rounded-lg transition-all" 
+                    className="pl-10 h-11 border-slate-200 focus-visible:ring-indigo-500 rounded-lg transition-all w-full" 
                     {...field} 
                   />
                 </div>
@@ -80,12 +80,12 @@ export const RegisterForm = () => {
             <FormItem>
               <FormLabel className="text-slate-700 font-medium">E-mail</FormLabel>
               <FormControl>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 h-5 w-5" />
+                <div className="relative flex items-center">
+                  <Mail className="absolute left-3 text-slate-400 h-5 w-5 pointer-events-none z-10" />
                   <Input 
                     type="email"
                     placeholder="exemplo@email.com" 
-                    className="pl-10 h-11 border-slate-200 focus-visible:ring-indigo-500 rounded-lg transition-all" 
+                    className="pl-10 h-11 border-slate-200 focus-visible:ring-indigo-500 rounded-lg transition-all w-full" 
                     {...field} 
                   />
                 </div>
@@ -103,12 +103,12 @@ export const RegisterForm = () => {
             <FormItem>
               <FormLabel className="text-slate-700 font-medium">Senha</FormLabel>
               <FormControl>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 h-5 w-5" />
+                <div className="relative flex items-center">
+                  <Lock className="absolute left-3 text-slate-400 h-5 w-5 pointer-events-none z-10" />
                   <Input 
                     type="password" 
                     placeholder="Mínimo 6 caracteres" 
-                    className="pl-10 h-11 border-slate-200 focus-visible:ring-indigo-500 rounded-lg transition-all" 
+                    className="pl-10 h-11 border-slate-200 focus-visible:ring-indigo-500 rounded-lg transition-all w-full" 
                     {...field} 
                   />
                 </div>
@@ -126,12 +126,12 @@ export const RegisterForm = () => {
             <FormItem>
               <FormLabel className="text-slate-700 font-medium">Confirmar Senha</FormLabel>
               <FormControl>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 h-5 w-5" />
+                <div className="relative flex items-center">
+                  <Lock className="absolute left-3 text-slate-400 h-5 w-5 pointer-events-none z-10" />
                   <Input 
                     type="password" 
                     placeholder="Repita sua senha" 
-                    className="pl-10 h-11 border-slate-200 focus-visible:ring-indigo-500 rounded-lg transition-all" 
+                    className="pl-10 h-11 border-slate-200 focus-visible:ring-indigo-500 rounded-lg transition-all w-full" 
                     {...field} 
                   />
                 </div>

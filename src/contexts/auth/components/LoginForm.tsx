@@ -7,6 +7,7 @@ import { useAuth } from "../hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Mail, Lock, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 const loginSchema = z.object({
@@ -17,7 +18,7 @@ const loginSchema = z.object({
 type LoginFormValues = z.infer<typeof loginSchema>;
 
 /**
- * Componente de formulário para autenticação de usuários existentes.
+ * Componente de formulário para autenticação, agora atualizado com ícones inline alinhados e espaçamento pl-10.
  */
 export const LoginForm = () => {
   const { login } = useAuth();
@@ -30,46 +31,87 @@ export const LoginForm = () => {
     try {
       await login(data);
     } catch (error) {
-      // Erro já tratado no hook via toast
+      // Erro tratado internamente no hook
     }
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 w-full max-w-sm">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 w-full">
+        {/* Campo E-mail */}
         <FormField
           control={form.control}
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>E-mail</FormLabel>
+              <FormLabel className="text-slate-700 font-medium">E-mail</FormLabel>
               <FormControl>
-                <Input placeholder="seu@email.com" {...field} />
+                <div className="relative flex items-center">
+                  <Mail className="absolute left-3 text-slate-400 h-5 w-5 pointer-events-none z-10" />
+                  <Input 
+                    type="email"
+                    placeholder="seu@email.com" 
+                    className="pl-10 h-11 border-slate-200 focus-visible:ring-indigo-500 rounded-lg transition-all w-full" 
+                    {...field} 
+                  />
+                </div>
               </FormControl>
-              <FormMessage />
+              <FormMessage className="text-xs" />
             </FormItem>
           )}
         />
+
+        {/* Campo Senha */}
         <FormField
           control={form.control}
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Senha</FormLabel>
+              <FormLabel className="text-slate-700 font-medium">Senha</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="******" {...field} />
+                <div className="relative flex items-center">
+                  <Lock className="absolute left-3 text-slate-400 h-5 w-5 pointer-events-none z-10" />
+                  <Input 
+                    type="password" 
+                    placeholder="******" 
+                    className="pl-10 h-11 border-slate-200 focus-visible:ring-indigo-500 rounded-lg transition-all w-full" 
+                    {...field} 
+                  />
+                </div>
               </FormControl>
-              <FormMessage />
+              <FormMessage className="text-xs" />
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
-          {form.formState.isSubmitting ? "Entrando..." : "Entrar"}
+
+        <Button 
+          type="submit" 
+          className="w-full h-11 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold shadow-md shadow-indigo-100 transition-all flex items-center justify-center gap-2 group mt-2" 
+          disabled={form.formState.isSubmitting}
+        >
+          {form.formState.isSubmitting ? (
+            "Entrando..."
+          ) : (
+            <>
+              Entrar na conta 
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </>
+          )}
         </Button>
-        <p className="text-sm text-center text-muted-foreground">
+
+        <div className="relative py-2">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t border-slate-100" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-white px-2 text-slate-400">Novo por aqui?</span>
+          </div>
+        </div>
+
+        <p className="text-sm text-center text-slate-500">
           Não tem uma conta?{" "}
-          <Link href="/register" className="text-primary hover:underline">
-            Cadastre-se
+          <Link href="/register" className="text-indigo-600 hover:text-indigo-700 font-semibold hover:underline transition-all">
+            Cadastre-se grátis
           </Link>
         </p>
       </form>
