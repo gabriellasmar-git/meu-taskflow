@@ -12,7 +12,7 @@ type FilterType = "all" | "active" | "completed";
 
 /**
  * Exibe a lista de tarefas filtrada por status com design otimizado.
- * Agora com visual premium e claro para tarefas concluídas.
+ * Contém o badge de status altamente profissional de tarefas concluídas.
  */
 export const TodoList = () => {
   const { todos, isLoading, toggleTodo, deleteTodo } = useTodos();
@@ -122,10 +122,14 @@ export const TodoList = () => {
                     </span>
                   </div>
 
+                  {/* Badge de status premium e moderno (Estilo GitHub / Linear / Notion) */}
                   {isCompleted && (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 shrink-0">
-                      Concluída
-                    </span>
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-100/80 shrink-0 select-none shadow-sm shadow-emerald-100/30">
+                      <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-emerald-600 text-white shadow-sm shrink-0">
+                        <Check className="h-2 w-2 stroke-[4.5px]" />
+                      </span>
+                      <span>Concluída</span>
+                    </div>
                   )}
                 </div>
 
