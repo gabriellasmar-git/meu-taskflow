@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/auth/hooks/useAuth";
 import { AddTodoForm } from "@/contexts/todos/components/AddTodoForm";
 import { TodoList } from "@/contexts/todos/components/TodoList";
 import { Button } from "@/components/ui/button";
-import { LogOut, CheckCircle2, User as UserIcon } from "lucide-react";
+import { LogOut, CheckCircle2 } from "lucide-react";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
@@ -73,7 +73,7 @@ export default function HomePage() {
         </div>
       </header>
 
-      <main className="container max-w-2xl mx-auto px-4 py-8 space-y-6">
+      <main className="container max-w-2xl mx-auto px-4 py-8 space-y-8">
         {/* Banner de boas-vindas */}
         <div className="bg-gradient-to-tr from-indigo-700 via-indigo-600 to-violet-600 text-white p-6 rounded-2xl shadow-xl shadow-indigo-100 border border-indigo-100 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl -mr-10 -mt-10" />
@@ -87,12 +87,14 @@ export default function HomePage() {
           </div>
         </div>
 
+        {/* Card de Nova Tarefa */}
         <section className="space-y-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
           <h2 className="text-xl font-bold tracking-tight text-slate-800">Nova Tarefa</h2>
           <AddTodoForm />
         </section>
 
-        <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+        {/* Card de Minha Lista com espaçamento adicional acima */}
+        <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mt-4">
           <div className="flex items-center justify-between mb-4 border-b border-slate-50 pb-3">
             <h2 className="text-xl font-bold tracking-tight text-slate-800">Minha Lista</h2>
           </div>

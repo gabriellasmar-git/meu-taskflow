@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useTodos } from "../hooks/useTodos";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Trash2, ListFilter, CheckCircle, Clock, Check } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -37,33 +36,33 @@ export const TodoList = () => {
 
   return (
     <div className="space-y-4 w-full">
-      {/* Abas de Filtros de Status */}
-      <div className="flex gap-1 p-1 bg-slate-50 rounded-xl border border-slate-100">
+      {/* Abas de Filtros de Status (Centralizado e Compacto) */}
+      <div className="flex gap-1 p-1 bg-slate-50 rounded-xl border border-slate-100 max-w-[340px] mx-auto w-full shadow-sm">
         <Button
           variant={filter === "all" ? "secondary" : "ghost"}
           size="sm"
           onClick={() => setFilter("all")}
-          className="flex-1 rounded-lg text-xs font-semibold py-1.5 h-auto transition-all"
+          className="flex-1 rounded-lg text-[11px] font-bold py-1.5 h-auto transition-all"
         >
-          <ListFilter className="h-3.5 w-3.5 mr-1.5" />
+          <ListFilter className="h-3 w-3 mr-1" />
           Todas ({todos?.length || 0})
         </Button>
         <Button
           variant={filter === "active" ? "secondary" : "ghost"}
           size="sm"
           onClick={() => setFilter("active")}
-          className="flex-1 rounded-lg text-xs font-semibold py-1.5 h-auto transition-all"
+          className="flex-1 rounded-lg text-[11px] font-bold py-1.5 h-auto transition-all"
         >
-          <Clock className="h-3.5 w-3.5 mr-1.5 text-amber-500" />
+          <Clock className="h-3 w-3 mr-1 text-amber-500" />
           Ativas ({todos?.filter((t) => !t.is_completed).length || 0})
         </Button>
         <Button
           variant={filter === "completed" ? "secondary" : "ghost"}
           size="sm"
           onClick={() => setFilter("completed")}
-          className="flex-1 rounded-lg text-xs font-semibold py-1.5 h-auto transition-all"
+          className="flex-1 rounded-lg text-[11px] font-bold py-1.5 h-auto transition-all"
         >
-          <CheckCircle className="h-3.5 w-3.5 mr-1.5 text-emerald-500" />
+          <CheckCircle className="h-3 w-3 mr-1 text-emerald-500" />
           Concluídas ({todos?.filter((t) => t.is_completed).length || 0})
         </Button>
       </div>
@@ -87,47 +86,46 @@ export const TodoList = () => {
                 className={cn(
                   "flex items-center justify-between p-4 border rounded-2xl bg-white transition-all duration-200 group hover:shadow-md",
                   isCompleted
-                    ? "border-emerald-100 bg-emerald-50/10"
+                    ? "border-green-100 bg-green-50/10"
                     : "border-slate-100 hover:border-indigo-100"
                 )}
               >
                 <div className="flex items-center gap-3.5 flex-1 min-w-0">
-                  <Checkbox
-                    checked={isCompleted}
-                    onCheckedChange={() =>
-                      toggleTodo.mutate({ id: todo.id, is_completed: isCompleted })
-                    }
-                    className={cn(
-                      "rounded-full h-5 w-5 border-slate-300 transition-all",
-                      isCompleted
-                        ? "border-emerald-500 bg-emerald-500 text-white data-[state=checked]:bg-emerald-500 data-[state=checked]:border-emerald-500"
-                        : "hover:border-indigo-500"
-                    )}
-                  />
+                  {/* Círculo de Toggle da Esquerda */}
+                  {isCompleted ? (
+                    <button
+                      onClick={() => toggleTodo.mutate({ id: todo.id, is_completed: isCompleted })}
+                      className="flex h-5 w-5 items-center justify-center rounded-full bg-green-500 text-white shrink-0 shadow-sm hover:bg-green-600 transition-colors"
+                      title="Marcar como pendente"
+                    >
+                      <Check className="h-3.5 w-3.5 stroke-[4px]" />
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => toggleTodo.mutate({ id: todo.id, is_completed: isCompleted })}
+                      className="h-5 w-5 rounded-full border border-slate-300 bg-white hover:border-indigo-500 transition-all shrink-0"
+                      title="Marcar como concluída"
+                    />
+                  )}
                   
+                  {/* Título da tarefa */}
                   <div className="flex items-center gap-2 flex-1 min-w-0">
-                    {isCompleted && (
-                      <Check className="h-4 w-4 text-emerald-600 shrink-0 stroke-[3px]" />
-                    )}
                     <span
                       onClick={() =>
                         toggleTodo.mutate({ id: todo.id, is_completed: isCompleted })
                       }
-                      className={cn(
-                        "text-sm font-semibold truncate cursor-pointer select-none transition-colors",
-                        isCompleted ? "text-slate-600" : "text-slate-800"
-                      )}
+                      className="text-sm font-semibold truncate cursor-pointer select-none text-slate-800 hover:text-slate-900 transition-colors"
                     >
                       {todo.title}
                     </span>
                   </div>
 
-                  {/* Badge de status das tarefas concluídas com bolinha e texto */}
+                  {/* Botão de Status Concluída à direita (Retângulo rounded-lg, borda verde, check verde) */}
                   {isCompleted && (
-                    <span className="inline-flex items-center gap-2 rounded-full border border-green-200 bg-green-50 px-3 py-1 text-sm font-semibold text-green-700 shrink-0 select-none">
-                      <span className="h-2.5 w-2.5 rounded-full bg-green-500" />
-                      Concluída
-                    </span>
+                    <div className="inline-flex items-center gap-1.5 rounded-lg border border-green-200 bg-white px-3 py-1 text-xs font-semibold text-green-700 shrink-0 select-none shadow-sm">
+                      <Check className="h-3.5 w-3.5 text-green-600 stroke-[3.5px]" />
+                      <span>Concluída</span>
+                    </div>
                   )}
                 </div>
 
