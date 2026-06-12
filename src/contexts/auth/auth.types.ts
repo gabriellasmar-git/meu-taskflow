@@ -1,10 +1,20 @@
-import type { User } from '@supabase/supabase-js';
+/**
+ * Tipo local representando o usuário autenticado do Supabase para evitar conflito de importação.
+ */
+export interface AuthUser {
+  id: string;
+  email?: string;
+  user_metadata?: {
+    full_name?: string;
+    [key: string]: unknown;
+  };
+}
 
 /**
  * Estado da autenticação do usuário.
  */
 export interface AuthState {
-  user: User | null;
+  user: AuthUser | null;
   isLoading: boolean;
   isAuthenticated: boolean;
 }
