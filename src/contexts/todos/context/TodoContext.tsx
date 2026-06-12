@@ -13,6 +13,7 @@ interface TodoContextType {
   fetchTodos: () => Promise<void>;
   createTodo: (input: CreateTodoInput) => Promise<Todo>;
   toggleTodo: (id: string, isCompleted: boolean) => Promise<void>;
+  updateTodo: (id: string, updates: Partial<Todo>) => Promise<void>;
   deleteTodo: (id: string) => Promise<void>;
 }
 
@@ -57,8 +58,8 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
     fetchTodos();
   }, [isAuthenticated, user?.id]);
 
-  // Criação de nova tarefa com resposta instantânea
-  const createTodo = async ({ title }: CreateTodoInput) => {
+  // Criação de nova tarefa com categoria e prioridade
+  const createTodo = async ({ title, category = "Geral", priority = "medium" }: CreateTodoInput) => {
     try {
       setIsCreating(true);
       const { data: { user: currentUser } } = await supabase.auth.getUser();
@@ -66,7 +67,7 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
 
       const { data, error } = await supabase
         .from("todos")
-        .insert([{ title, user_id: currentUser.id }])
+        .insert([{ title, category, priority, user_id: currentUser.id }])
         .select()
         .single();
 
@@ -107,6 +108,27 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  // Atualizar propriedades específicas de uma tarefa (título, categoria, prioridade)
+  const updateTodo = async (id: string, updates: Partial<Todo>) => {
+    // Atualização otimista imediata
+    setTodos((prev) =>
+      prev.map((t) => (t.id === id ? { ...t, ...updates } : t))
+    );
+
+    try {
+      const { error } = await supabase
+        .from("todos")
+        .update(updates)
+        .eq("id", id);
+
+      if (error) throw error;
+      toast.success("Tarefa atualizada com sucesso!");
+    } catch (error: any) {
+      toast.error(`Erro ao editar tarefa: ${error.message}`);
+      fetchTodos();
+    }
+  };
+
   // Deletar tarefa (com atualização otimista na UI)
   const deleteTodo = async (id: string) => {
     // Atualização otimista imediata
@@ -133,6 +155,7 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
         fetchTodos,
         createTodo,
         toggleTodo,
+        updateTodo,
         deleteTodo,
       }}
     >

@@ -1,10 +1,11 @@
 "use client";
 
 import { useTodoContext } from "../context/TodoContext";
+import { Todo } from "../todos.types";
 
 /**
  * Hook para gerenciar as tarefas do usuário, consumindo o estado unificado e reativo do TodoContext.
- * Mantém a mesma assinatura para não quebrar compatibilidade com os componentes existentes.
+ * Mantém a mesma assinatura para não quebrar compatibilidade com os componentes existentes, adicionando novas funcionalidades.
  * 
  * @returns Queries e mutações para manipular tarefas.
  */
@@ -21,6 +22,10 @@ export function useTodos() {
     toggleTodo: {
       mutate: ({ id, is_completed }: { id: string; is_completed: boolean }) =>
         context.toggleTodo(id, is_completed),
+    },
+    updateTodo: {
+      mutate: ({ id, ...updates }: { id: string } & Partial<Todo>) =>
+        context.updateTodo(id, updates),
     },
     deleteTodo: {
       mutate: (id: string) => context.deleteTodo(id),

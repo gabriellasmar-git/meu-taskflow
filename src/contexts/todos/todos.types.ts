@@ -1,5 +1,5 @@
 /**
- * Representa uma tarefa no sistema.
+ * Representa uma tarefa no sistema com suporte a categorização e prioridade.
  */
 export interface Todo {
   id: string;
@@ -7,6 +7,8 @@ export interface Todo {
   title: string;
   is_completed: boolean;
   user_id: string;
+  category?: string;
+  priority?: 'low' | 'medium' | 'high';
 }
 
 /**
@@ -14,4 +16,6 @@ export interface Todo {
  */
 export interface CreateTodoInput {
   title: string;
+  category?: string;
+  priority?: 'low' | 'medium' | 'high';
 }
