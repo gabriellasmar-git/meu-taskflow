@@ -10,6 +10,7 @@ interface DialogProps {
 
 /**
  * Versão simplificada do Dialog para garantir compatibilidade de build e importação.
+ * Atualizado para forçar o trigger de deploy na Vercel.
  */
 export function Dialog({ children }: DialogProps) {
   return <>{children}</>;
