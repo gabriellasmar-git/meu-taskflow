@@ -82,13 +82,17 @@ export const TodoList = () => {
               key={todo.id}
               className="flex items-center justify-between p-4 border rounded-xl bg-white hover:bg-slate-50/50 hover:shadow-sm transition-all border-slate-100 group"
             >
-              <div className="flex items-center gap-3.5 flex-1 min-w-0">
+              {/* Área clicável que engloba o checkbox e o texto */}
+              <div 
+                className="flex items-center gap-3.5 flex-1 min-w-0 cursor-pointer select-none"
+                onClick={() =>
+                  toggleTodo.mutate({ id: todo.id, is_completed: todo.is_completed })
+                }
+              >
                 <Checkbox
                   checked={todo.is_completed}
-                  onCheckedChange={() =>
-                    toggleTodo.mutate({ id: todo.id, is_completed: todo.is_completed })
-                  }
-                  className="rounded-md border-slate-300 data-[state=checked]:bg-indigo-600 data-[state=checked]:border-indigo-600 transition-colors"
+                  onCheckedChange={() => {}} // Controlado pelo clique no container pai para evitar conflitos de eventos
+                  className="rounded-md border-slate-300 data-[state=checked]:bg-indigo-600 data-[state=checked]:border-indigo-600 transition-colors pointer-events-none"
                 />
                 <span
                   className={`text-sm font-medium truncate flex-1 transition-all ${
