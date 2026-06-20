@@ -230,7 +230,15 @@ export const TodoList = () => {
                         variant="ghost"
                         size="icon"
                         className="text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl h-8 w-8 transition-colors"
-                        onClick={() => deleteTodo.mutate(todo.id)}
+                       onClick={() => {
+  const confirmed = window.confirm(
+    "Tem certeza que deseja excluir esta tarefa?"
+  );
+
+  if (!confirmed) return;
+
+  deleteTodo.mutate(todo.id);
+}}
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                       </Button>
