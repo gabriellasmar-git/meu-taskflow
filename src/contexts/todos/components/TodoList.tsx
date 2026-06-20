@@ -54,10 +54,16 @@ export const TodoList = () => {
   };
 
   const handleSaveEdit = (id: string) => {
-    if (!editTitle.trim()) return;
-    updateTodo.mutate({ id, title: editTitle });
-    setEditingId(null);
-    setEditTitle("");
+  if (!editTitle.trim()) return;
+
+  const confirmed = window.confirm("Tem certeza que deseja salvar esta alteração?");
+  if (!confirmed) return;
+
+  updateTodo.mutate({ id, title: editTitle });
+
+  setEditingId(null);
+  setEditTitle("");
+
   };
 
   return (
