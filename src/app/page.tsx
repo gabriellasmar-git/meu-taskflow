@@ -6,25 +6,33 @@ import { TodoList } from "@/contexts/todos/components/TodoList";
 import { useTodos } from "@/contexts/todos/hooks/useTodos";
 import { Button } from "@/components/ui/button";
 import { LogOut, Activity, LayoutDashboard, Compass } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 /**
  * Página principal do TaskFlow. Exibe o fluxo de tarefas do usuário com banner modernizado,
  * paleta de cores (azul escuro slate, esmeralda e branco) e cartões estilizados.
+ * Inclui verificação robusta de montagem (mounted) para prevenir erros de hidratação (hydration errors).
  */
 export default function HomePage() {
   const { user, isLoading, logout, isAuthenticated } = useAuth();
   const { todos } = useTodos();
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
+
+  // Garante que o componente está montado no cliente antes de renderizar elementos dinâmicos
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
+    if (mounted && !isLoading && !isAuthenticated) {
       router.push("/login");
     }
-  }, [isLoading, isAuthenticated, router]);
+  }, [mounted, isLoading, isAuthenticated, router]);
 
-  if (isLoading || !isAuthenticated) {
+  // Enquanto não estiver montado ou carregando dados da sessão, exibe o esqueleto idêntico no SSR e Client
+  if (!mounted || isLoading || !isAuthenticated) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-slate-950">
         <div className="text-center space-y-4">
