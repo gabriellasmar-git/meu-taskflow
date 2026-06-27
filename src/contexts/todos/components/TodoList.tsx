@@ -11,14 +11,14 @@ import { cn } from "@/lib/utils";
 type FilterType = "all" | "active" | "completed";
 
 const PRIORITY_LABELS = {
-  low: { label: "Baixa", color: "bg-blue-50 text-blue-700 border-blue-100" },
-  medium: { label: "Média", color: "bg-amber-50 text-amber-700 border-amber-100" },
-  high: { label: "Alta", color: "bg-rose-50 text-rose-700 border-rose-100" },
+  low: { label: "Baixa", color: "bg-blue-950/60 text-blue-300 border-blue-900/60" },
+  medium: { label: "Média", color: "bg-amber-950/60 text-amber-300 border-amber-900/60" },
+  high: { label: "Alta", color: "bg-rose-950/60 text-rose-300 border-rose-900/60" },
 };
 
 /**
- * Exibe a lista de tarefas filtrada por status com design altamente otimizado e profissional.
- * Suporta filtros, exibição de categorias, etiquetas de prioridades, e alteração inline dos títulos.
+ * Exibe a lista de tarefas filtrada por status com a identidade refinada do TaskFlow.
+ * Suporta edição inline, exclusão, visual de prioridade e categorias integradas no tema escuro.
  */
 export const TodoList = () => {
   const { todos, isLoading, toggleTodo, updateTodo, deleteTodo } = useTodos();
@@ -30,7 +30,7 @@ export const TodoList = () => {
     return (
       <div className="space-y-3 w-full">
         {[1, 2, 3].map((i) => (
-          <Skeleton key={i} className="h-14 w-full rounded-xl" />
+          <Skeleton key={i} className="h-14 w-full rounded-2xl bg-slate-800/50" />
         ))}
       </div>
     );
@@ -54,58 +54,65 @@ export const TodoList = () => {
   };
 
   const handleSaveEdit = (id: string) => {
-  if (!editTitle.trim()) return;
+    if (!editTitle.trim()) return;
 
-  const confirmed = window.confirm("Tem certeza que deseja salvar esta alteração?");
-  if (!confirmed) return;
+    const confirmed = window.confirm("Salvar alterações nesta atividade?");
+    if (!confirmed) return;
 
-  updateTodo.mutate({ id, title: editTitle });
-
-  setEditingId(null);
-  setEditTitle("");
-
+    updateTodo.mutate({ id, title: editTitle });
+    setEditingId(null);
+    setEditTitle("");
   };
 
   return (
     <div className="space-y-4 w-full">
-      {/* Abas de Filtros de Status (Centralizado e Compacto) */}
-      <div className="flex gap-1 p-1 bg-slate-50 rounded-xl border border-slate-100 max-w-[380px] mx-auto w-full shadow-sm">
+      {/* Abas de Filtros de Status (Estilo Dark Modern) */}
+      <div className="flex gap-1 p-1 bg-slate-950 rounded-xl border border-slate-800 max-w-[380px] mx-auto w-full shadow-inner">
         <Button
           variant={filter === "all" ? "secondary" : "ghost"}
           size="sm"
           onClick={() => setFilter("all")}
-          className="flex-1 rounded-lg text-[11px] font-bold py-1.5 h-auto transition-all"
+          className={cn(
+            "flex-1 rounded-lg text-[11px] font-extrabold py-1.5 h-auto transition-all",
+            filter === "all" ? "bg-slate-800 text-white" : "text-slate-400 hover:text-slate-100"
+          )}
         >
-          <ListFilter className="h-3 w-3 mr-1 text-indigo-500" />
+          <ListFilter className="h-3 w-3 mr-1 text-emerald-400" />
           Todas ({todos?.length || 0})
         </Button>
         <Button
           variant={filter === "active" ? "secondary" : "ghost"}
           size="sm"
           onClick={() => setFilter("active")}
-          className="flex-1 rounded-lg text-[11px] font-bold py-1.5 h-auto transition-all"
+          className={cn(
+            "flex-1 rounded-lg text-[11px] font-extrabold py-1.5 h-auto transition-all",
+            filter === "active" ? "bg-slate-800 text-white" : "text-slate-400 hover:text-slate-100"
+          )}
         >
-          <Clock className="h-3 w-3 mr-1 text-amber-500" />
+          <Clock className="h-3 w-3 mr-1 text-amber-400" />
           Ativas ({todos?.filter((t) => !t.is_completed).length || 0})
         </Button>
         <Button
           variant={filter === "completed" ? "secondary" : "ghost"}
           size="sm"
           onClick={() => setFilter("completed")}
-          className="flex-1 rounded-lg text-[11px] font-bold py-1.5 h-auto transition-all"
+          className={cn(
+            "flex-1 rounded-lg text-[11px] font-extrabold py-1.5 h-auto transition-all",
+            filter === "completed" ? "bg-slate-800 text-white" : "text-slate-400 hover:text-slate-100"
+          )}
         >
-          <CheckCircle className="h-3 w-3 mr-1 text-emerald-500" />
+          <CheckCircle className="h-3 w-3 mr-1 text-emerald-400" />
           Concluídas ({todos?.filter((t) => t.is_completed).length || 0})
         </Button>
       </div>
 
       {/* Conteúdo da Lista */}
       {!filteredTodos.length ? (
-        <div className="text-center py-10 bg-slate-50/50 rounded-2xl border border-dashed border-slate-100">
-          <p className="text-slate-400 font-medium text-sm">
-            {filter === "all" && "Nenhuma tarefa criada. Adicione uma acima!"}
-            {filter === "active" && "Nenhuma tarefa pendente por aqui! 🎉"}
-            {filter === "completed" && "Nenhuma tarefa concluída ainda."}
+        <div className="text-center py-10 bg-slate-950/40 rounded-2xl border border-dashed border-slate-800/80">
+          <p className="text-slate-500 font-bold text-sm">
+            {filter === "all" && "Nenhum fluxo de tarefas ativo. Adicione um acima!"}
+            {filter === "active" && "Nenhuma pendência no seu fluxo! Parabéns! 🚀"}
+            {filter === "completed" && "Sem tarefas entregues ainda neste filtro."}
           </p>
         </div>
       ) : (
@@ -119,10 +126,10 @@ export const TodoList = () => {
               <div
                 key={todo.id}
                 className={cn(
-                  "flex flex-col p-4 border rounded-2xl bg-white transition-all duration-200 group hover:shadow-md",
+                  "flex flex-col p-4 border rounded-2xl bg-slate-950 transition-all duration-200 group hover:border-slate-700 hover:shadow-lg",
                   isCompleted
-                    ? "border-green-100 bg-green-50/10"
-                    : "border-slate-100 hover:border-indigo-100"
+                    ? "border-emerald-950/50 bg-emerald-950/10"
+                    : "border-slate-800/80"
                 )}
               >
                 <div className="flex items-start justify-between gap-3.5">
@@ -131,15 +138,15 @@ export const TodoList = () => {
                     {isCompleted ? (
                       <button
                         onClick={() => toggleTodo.mutate({ id: todo.id, is_completed: isCompleted })}
-                        className="flex h-5 w-5 items-center justify-center rounded-full bg-green-500 text-white shrink-0 shadow-sm hover:bg-green-600 transition-colors"
-                        title="Marcar como pendente"
+                        className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-slate-950 shrink-0 shadow-md hover:bg-emerald-600 transition-colors"
+                        title="Marcar como ativa"
                       >
                         <Check className="h-3.5 w-3.5 stroke-[4px]" />
                       </button>
                     ) : (
                       <button
                         onClick={() => toggleTodo.mutate({ id: todo.id, is_completed: isCompleted })}
-                        className="h-5 w-5 rounded-full border border-slate-300 bg-white hover:border-indigo-500 transition-all shrink-0"
+                        className="h-5 w-5 rounded-full border border-slate-700 bg-slate-900 hover:border-emerald-500 transition-all shrink-0"
                         title="Marcar como concluída"
                       />
                     )}
@@ -150,7 +157,7 @@ export const TodoList = () => {
                         <Input
                           value={editTitle}
                           onChange={(e) => setEditTitle(e.target.value)}
-                          className="h-9 px-3 border-slate-200 focus-visible:ring-indigo-500 rounded-lg text-sm"
+                          className="h-9 px-3 bg-slate-900 border-slate-800 focus-visible:ring-emerald-500 text-slate-100 rounded-lg text-sm"
                           autoFocus
                           onKeyDown={(e) => {
                             if (e.key === "Enter") handleSaveEdit(todo.id);
@@ -160,7 +167,7 @@ export const TodoList = () => {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-8 w-8 text-emerald-600 hover:bg-emerald-50 rounded-lg shrink-0"
+                          className="h-8 w-8 text-emerald-400 hover:bg-emerald-500/10 rounded-lg shrink-0"
                           onClick={() => handleSaveEdit(todo.id)}
                         >
                           <Save className="h-4 w-4" />
@@ -168,7 +175,7 @@ export const TodoList = () => {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-8 w-8 text-slate-400 hover:bg-slate-50 rounded-lg shrink-0"
+                          className="h-8 w-8 text-slate-500 hover:bg-slate-800 rounded-lg shrink-0"
                           onClick={handleCancelEdit}
                         >
                           <X className="h-4 w-4" />
@@ -181,23 +188,23 @@ export const TodoList = () => {
                             toggleTodo.mutate({ id: todo.id, is_completed: isCompleted })
                           }
                           className={cn(
-                            "text-sm font-semibold truncate cursor-pointer select-none text-slate-800 hover:text-slate-900 transition-colors block",
-                            isCompleted && "line-through text-slate-400"
+                            "text-sm font-bold truncate cursor-pointer select-none text-slate-200 hover:text-white transition-colors block",
+                            isCompleted && "line-through text-slate-500"
                           )}
                         >
                           {todo.title}
                         </span>
                         
-                        {/* Tags Inferiores de Categorias e Prioridade */}
-                        <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
+                        {/* Tags Inferiores do TaskFlow */}
+                        <div className="flex flex-wrap items-center gap-1.5 mt-2">
                           {todo.category && (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-indigo-50 text-indigo-700 border border-indigo-100 shadow-sm">
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-black bg-slate-900 text-slate-300 border border-slate-800 shadow-sm">
                               {todo.category}
                             </span>
                           )}
                           
                           <span className={cn(
-                            "inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-extrabold border shadow-sm",
+                            "inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-black border shadow-sm",
                             priorityConfig.color
                           )}>
                             Prioridade {priorityConfig.label}
@@ -211,15 +218,15 @@ export const TodoList = () => {
                   {!isEditing && (
                     <div className="flex items-center gap-1 shrink-0 ml-2">
                       {isCompleted ? (
-                        <div className="inline-flex items-center gap-1 rounded-lg border border-green-200 bg-white px-2 py-1 text-[11px] font-bold text-green-700 select-none shadow-sm">
-                          <Check className="h-3 w-3 text-green-600 stroke-[3px]" />
-                          <span>Feito</span>
+                        <div className="inline-flex items-center gap-1 rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-extrabold text-emerald-400 select-none shadow-sm">
+                          <Check className="h-3 w-3 text-emerald-400 stroke-[3px]" />
+                          <span>Concluído</span>
                         </div>
                       ) : (
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl h-8 w-8 transition-colors"
+                          className="text-slate-500 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-xl h-8 w-8 transition-colors"
                           onClick={() => handleStartEdit(todo.id, todo.title)}
                         >
                           <Edit3 className="h-3.5 w-3.5" />
@@ -229,16 +236,12 @@ export const TodoList = () => {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl h-8 w-8 transition-colors"
-                       onClick={() => {
-  const confirmed = window.confirm(
-    "Tem certeza que deseja excluir esta tarefa?"
-  );
-
-  if (!confirmed) return;
-
-  deleteTodo.mutate(todo.id);
-}}
+                        className="text-slate-500 hover:text-red-400 hover:bg-red-500/10 rounded-xl h-8 w-8 transition-colors"
+                        onClick={() => {
+                          const confirmed = window.confirm("Excluir esta atividade do seu fluxo de tarefas?");
+                          if (!confirmed) return;
+                          deleteTodo.mutate(todo.id);
+                        }}
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                       </Button>

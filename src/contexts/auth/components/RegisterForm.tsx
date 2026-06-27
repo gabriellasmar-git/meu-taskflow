@@ -26,7 +26,7 @@ const registerSchema = z.object({
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
 /**
- * Componente do formulário de cadastro com ícones no canto direito (right-4) para evitar conflitos de preenchimento.
+ * Componente do formulário de cadastro estilizado para o tema escuro moderno do TaskFlow.
  */
 export const RegisterForm = () => {
   const { register } = useAuth();
@@ -56,18 +56,18 @@ export const RegisterForm = () => {
           name="fullName"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-slate-700 font-medium">Nome Completo</FormLabel>
+              <FormLabel className="text-slate-300 font-semibold text-xs uppercase tracking-wider">Nome Completo</FormLabel>
               <FormControl>
                 <div className="relative flex items-center">
                   <Input 
-                    placeholder="Seu nome" 
-                    className="pr-10 h-11 border-slate-200 focus-visible:ring-indigo-500 rounded-lg transition-all w-full" 
+                    placeholder="Ex: Carlos Silva" 
+                    className="pr-10 h-11 bg-slate-900 border-slate-800 focus-visible:ring-emerald-500 rounded-xl transition-all w-full text-slate-100 placeholder:text-slate-500" 
                     {...field} 
                   />
-                  <User className="absolute right-4 text-slate-400 h-5 w-5 pointer-events-none z-10" />
+                  <User className="absolute right-4 text-slate-500 h-5 w-5 pointer-events-none z-10" />
                 </div>
               </FormControl>
-              <FormMessage className="text-xs" />
+              <FormMessage className="text-emerald-400 text-xs" />
             </FormItem>
           )}
         />
@@ -78,19 +78,19 @@ export const RegisterForm = () => {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-slate-700 font-medium">E-mail</FormLabel>
+              <FormLabel className="text-slate-300 font-semibold text-xs uppercase tracking-wider">E-mail Corporativo ou Pessoal</FormLabel>
               <FormControl>
                 <div className="relative flex items-center">
                   <Input 
                     type="email"
-                    placeholder="exemplo@email.com" 
-                    className="pr-10 h-11 border-slate-200 focus-visible:ring-indigo-500 rounded-lg transition-all w-full" 
+                    placeholder="carlos@exemplo.com" 
+                    className="pr-10 h-11 bg-slate-900 border-slate-800 focus-visible:ring-emerald-500 rounded-xl transition-all w-full text-slate-100 placeholder:text-slate-500" 
                     {...field} 
                   />
-                  <Mail className="absolute right-4 text-slate-400 h-5 w-5 pointer-events-none z-10" />
+                  <Mail className="absolute right-4 text-slate-500 h-5 w-5 pointer-events-none z-10" />
                 </div>
               </FormControl>
-              <FormMessage className="text-xs" />
+              <FormMessage className="text-emerald-400 text-xs" />
             </FormItem>
           )}
         />
@@ -101,19 +101,19 @@ export const RegisterForm = () => {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-slate-700 font-medium">Senha</FormLabel>
+              <FormLabel className="text-slate-300 font-semibold text-xs uppercase tracking-wider">Escolha uma Senha</FormLabel>
               <FormControl>
                 <div className="relative flex items-center">
                   <Input 
                     type="password" 
-                    placeholder="Mínimo 6 caracteres" 
-                    className="pr-10 h-11 border-slate-200 focus-visible:ring-indigo-500 rounded-lg transition-all w-full" 
+                    placeholder="No mínimo 6 caracteres" 
+                    className="pr-10 h-11 bg-slate-900 border-slate-800 focus-visible:ring-emerald-500 rounded-xl transition-all w-full text-slate-100 placeholder:text-slate-500" 
                     {...field} 
                   />
-                  <Lock className="absolute right-4 text-slate-400 h-5 w-5 pointer-events-none z-10" />
+                  <Lock className="absolute right-4 text-slate-500 h-5 w-5 pointer-events-none z-10" />
                 </div>
               </FormControl>
-              <FormMessage className="text-xs" />
+              <FormMessage className="text-emerald-400 text-xs" />
             </FormItem>
           )}
         />
@@ -124,33 +124,33 @@ export const RegisterForm = () => {
           name="confirmPassword"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-slate-700 font-medium">Confirmar Senha</FormLabel>
+              <FormLabel className="text-slate-300 font-semibold text-xs uppercase tracking-wider">Confirme a Senha</FormLabel>
               <FormControl>
                 <div className="relative flex items-center">
                   <Input 
                     type="password" 
                     placeholder="Repita sua senha" 
-                    className="pr-10 h-11 border-slate-200 focus-visible:ring-indigo-500 rounded-lg transition-all w-full" 
+                    className="pr-10 h-11 bg-slate-900 border-slate-800 focus-visible:ring-emerald-500 rounded-xl transition-all w-full text-slate-100 placeholder:text-slate-500" 
                     {...field} 
                   />
-                  <Lock className="absolute right-4 text-slate-400 h-5 w-5 pointer-events-none z-10" />
+                  <Lock className="absolute right-4 text-slate-500 h-5 w-5 pointer-events-none z-10" />
                 </div>
               </FormControl>
-              <FormMessage className="text-xs" />
+              <FormMessage className="text-emerald-400 text-xs" />
             </FormItem>
           )}
         />
 
         <Button 
           type="submit" 
-          className="w-full h-11 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold shadow-md shadow-indigo-100 transition-all flex items-center justify-center gap-2 group mt-2" 
+          className="w-full h-11 bg-emerald-500 hover:bg-emerald-600 text-slate-950 rounded-xl font-bold transition-all flex items-center justify-center gap-2 group mt-2" 
           disabled={form.formState.isSubmitting}
         >
           {form.formState.isSubmitting ? (
-            "Criando sua conta..."
+            "Inicializando o seu fluxo..."
           ) : (
             <>
-              Criar minha conta 
+              Criar minha conta no TaskFlow
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </>
           )}
@@ -158,16 +158,16 @@ export const RegisterForm = () => {
 
         <div className="relative py-2">
           <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t border-slate-100" />
+            <span className="w-full border-t border-slate-800" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-white px-2 text-slate-400">Ou se preferir</span>
+            <span className="bg-slate-950 px-2 text-slate-500 font-bold tracking-wider">Já tem conta?</span>
           </div>
         </div>
 
-        <p className="text-sm text-center text-slate-500">
+        <p className="text-sm text-center text-slate-400">
           Já possui um perfil?{" "}
-          <Link href="/login" className="text-indigo-600 hover:text-indigo-700 font-semibold hover:underline transition-all">
+          <Link href="/login" className="text-emerald-400 hover:text-emerald-300 font-bold hover:underline transition-all">
             Fazer login
           </Link>
         </p>

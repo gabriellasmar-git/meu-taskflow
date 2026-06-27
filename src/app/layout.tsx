@@ -3,8 +3,8 @@ import "./globals.css";
 import { Providers } from "@/components/providers";
 
 export const metadata: Metadata = {
-  title: "Meu To Do",
-  description: "Gerencie suas tarefas de forma simples",
+  title: "TaskFlow — Produtividade Inteligente",
+  description: "Gerencie suas tarefas diárias com foco, rapidez e simplicidade.",
 };
 
 export default function RootLayout({
