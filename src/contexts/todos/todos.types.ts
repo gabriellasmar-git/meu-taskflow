@@ -9,6 +9,7 @@ export interface Todo {
   user_id: string;
   category?: string;
   priority?: 'low' | 'medium' | 'high';
+  is_deleted?: boolean;
 }
 
 /**

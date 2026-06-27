@@ -67,7 +67,7 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
 
       const { data, error } = await supabase
         .from("todos")
-        .insert([{ title, category, priority, user_id: currentUser.id }])
+        .insert([{ title, category, priority, user_id: currentUser.id, is_deleted: false }])
         .select()
         .single();
 
@@ -108,7 +108,7 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // Atualizar propriedades específicas de uma tarefa (título, categoria, prioridade)
+  // Atualizar propriedades específicas de uma tarefa (título, categoria, prioridade, is_deleted)
   const updateTodo = async (id: string, updates: Partial<Todo>) => {
     // Atualização otimista imediata
     setTodos((prev) =>
@@ -122,23 +122,33 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
         .eq("id", id);
 
       if (error) throw error;
-      toast.success("Tarefa atualizada com sucesso!");
+      
+      if (updates.is_deleted === false) {
+        toast.success("Tarefa restaurada com sucesso!");
+      } else if (updates.is_deleted === undefined) {
+        toast.success("Tarefa atualizada com sucesso!");
+      }
     } catch (error: any) {
       toast.error(`Erro ao editar tarefa: ${error.message}`);
       fetchTodos();
     }
   };
 
-  // Deletar tarefa (com atualização otimista na UI)
+  // Deletar tarefa implementado de forma segura como SOFT DELETE (com atualização otimista na UI)
   const deleteTodo = async (id: string) => {
     // Atualização otimista imediata
-    setTodos((prev) => prev.filter((t) => t.id !== id));
+    setTodos((prev) =>
+      prev.map((t) => (t.id === id ? { ...t, is_deleted: true } : t))
+    );
 
     try {
-      const { error } = await supabase.from("todos").delete().eq("id", id);
+      const { error } = await supabase
+        .from("todos")
+        .update({ is_deleted: true })
+        .eq("id", id);
       if (error) throw error;
 
-      toast.success("Tarefa removida.");
+      toast.success("Tarefa movida para a lixeira.");
     } catch (error: any) {
       toast.error(`Erro ao remover tarefa: ${error.message}`);
       // Reverte o estado local em caso de falha de rede

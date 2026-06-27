@@ -4,11 +4,11 @@ import { useState } from "react";
 import { useTodos } from "../hooks/useTodos";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Trash2, ListFilter, CheckCircle, Clock, Check, Edit3, X, Save } from "lucide-react";
+import { Trash2, ListFilter, CheckCircle, Clock, Check, Edit3, X, Save, RotateCcw } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
-type FilterType = "all" | "active" | "completed";
+type FilterType = "all" | "active" | "completed" | "deleted";
 
 const PRIORITY_LABELS = {
   low: { label: "Baixa", color: "bg-blue-950/60 text-blue-300 border-blue-900/60" },
@@ -18,7 +18,7 @@ const PRIORITY_LABELS = {
 
 /**
  * Exibe a lista de tarefas filtrada por status com a identidade refinada do TaskFlow.
- * Suporta edição inline, exclusão, visual de prioridade e categorias integradas no tema escuro.
+ * Suporta edição inline, soft-delete, restauração, visual de prioridade e categorias integradas no tema escuro.
  */
 export const TodoList = () => {
   const { todos, isLoading, toggleTodo, updateTodo, deleteTodo } = useTodos();
@@ -36,11 +36,17 @@ export const TodoList = () => {
     );
   }
 
-  // Filtra as tarefas de acordo com o estado selecionado
+  // Filtra as tarefas de acordo com o estado selecionado (garante que is_deleted = false na lista principal)
   const filteredTodos = (todos || []).filter((todo) => {
+    if (filter === "deleted") {
+      return todo.is_deleted === true;
+    }
+    // Para todas as outras abas, só mostra se não estiver excluído
+    if (todo.is_deleted === true) return false;
+
     if (filter === "active") return !todo.is_completed;
     if (filter === "completed") return todo.is_completed;
-    return true;
+    return true; // "all"
   });
 
   const handleStartEdit = (id: string, currentTitle: string) => {
@@ -66,8 +72,8 @@ export const TodoList = () => {
 
   return (
     <div className="space-y-4 w-full">
-      {/* Abas de Filtros de Status (Estilo Dark Modern) */}
-      <div className="flex gap-1 p-1 bg-slate-950 rounded-xl border border-slate-800 max-w-[380px] mx-auto w-full shadow-inner">
+      {/* Abas de Filtros de Status (Estilo Dark Modern expandido para incluir soft delete) */}
+      <div className="flex flex-wrap gap-1 p-1 bg-slate-950 rounded-xl border border-slate-800 max-w-[500px] mx-auto w-full shadow-inner">
         <Button
           variant={filter === "all" ? "secondary" : "ghost"}
           size="sm"
@@ -78,7 +84,7 @@ export const TodoList = () => {
           )}
         >
           <ListFilter className="h-3 w-3 mr-1 text-emerald-400" />
-          Todas ({todos?.length || 0})
+          Todas ({todos?.filter((t) => !t.is_deleted).length || 0})
         </Button>
         <Button
           variant={filter === "active" ? "secondary" : "ghost"}
@@ -90,7 +96,7 @@ export const TodoList = () => {
           )}
         >
           <Clock className="h-3 w-3 mr-1 text-amber-400" />
-          Ativas ({todos?.filter((t) => !t.is_completed).length || 0})
+          Ativas ({todos?.filter((t) => !t.is_completed && !t.is_deleted).length || 0})
         </Button>
         <Button
           variant={filter === "completed" ? "secondary" : "ghost"}
@@ -102,7 +108,19 @@ export const TodoList = () => {
           )}
         >
           <CheckCircle className="h-3 w-3 mr-1 text-emerald-400" />
-          Concluídas ({todos?.filter((t) => t.is_completed).length || 0})
+          Concluídas ({todos?.filter((t) => t.is_completed && !t.is_deleted).length || 0})
+        </Button>
+        <Button
+          variant={filter === "deleted" ? "secondary" : "ghost"}
+          size="sm"
+          onClick={() => setFilter("deleted")}
+          className={cn(
+            "flex-1 rounded-lg text-[11px] font-extrabold py-1.5 h-auto transition-all",
+            filter === "deleted" ? "bg-slate-800 text-white" : "text-slate-400 hover:text-slate-100"
+          )}
+        >
+          <Trash2 className="h-3 w-3 mr-1 text-red-400" />
+          Excluídas ({todos?.filter((t) => t.is_deleted).length || 0})
         </Button>
       </div>
 
@@ -113,6 +131,7 @@ export const TodoList = () => {
             {filter === "all" && "Nenhum fluxo de tarefas ativo. Adicione um acima!"}
             {filter === "active" && "Nenhuma pendência no seu fluxo! Parabéns! 🚀"}
             {filter === "completed" && "Sem tarefas entregues ainda neste filtro."}
+            {filter === "deleted" && "Lixeira vazia. Nenhuma tarefa excluída!"}
           </p>
         </div>
       ) : (
@@ -127,7 +146,9 @@ export const TodoList = () => {
                 key={todo.id}
                 className={cn(
                   "flex flex-col p-4 border rounded-2xl bg-slate-950 transition-all duration-200 group hover:border-slate-700 hover:shadow-lg",
-                  isCompleted
+                  todo.is_deleted
+                    ? "border-red-950/30 bg-red-950/5"
+                    : isCompleted
                     ? "border-emerald-950/50 bg-emerald-950/10"
                     : "border-slate-800/80"
                 )}
@@ -135,7 +156,11 @@ export const TodoList = () => {
                 <div className="flex items-start justify-between gap-3.5">
                   <div className="flex items-center gap-3.5 flex-1 min-w-0">
                     {/* Círculo de Toggle da Esquerda */}
-                    {isCompleted ? (
+                    {todo.is_deleted ? (
+                      <div className="h-5 w-5 rounded-full border border-dashed border-red-500/30 bg-slate-900 shrink-0 flex items-center justify-center">
+                        <Trash2 className="h-3 w-3 text-red-500/50" />
+                      </div>
+                    ) : isCompleted ? (
                       <button
                         onClick={() => toggleTodo.mutate({ id: todo.id, is_completed: isCompleted })}
                         className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-slate-950 shrink-0 shadow-md hover:bg-emerald-600 transition-colors"
@@ -184,12 +209,16 @@ export const TodoList = () => {
                     ) : (
                       <div className="flex-1 min-w-0">
                         <span
-                          onClick={() =>
-                            toggleTodo.mutate({ id: todo.id, is_completed: isCompleted })
-                          }
+                          onClick={() => {
+                            if (!todo.is_deleted) {
+                              toggleTodo.mutate({ id: todo.id, is_completed: isCompleted });
+                            }
+                          }}
                           className={cn(
-                            "text-sm font-bold truncate cursor-pointer select-none text-slate-200 hover:text-white transition-colors block",
-                            isCompleted && "line-through text-slate-500"
+                            "text-sm font-bold truncate transition-colors block text-slate-200",
+                            !todo.is_deleted && "cursor-pointer select-none hover:text-white",
+                            isCompleted && "line-through text-slate-500",
+                            todo.is_deleted && "text-slate-400 italic"
                           )}
                         >
                           {todo.title}
@@ -217,34 +246,52 @@ export const TodoList = () => {
                   {/* Grupo de Ações da Direita */}
                   {!isEditing && (
                     <div className="flex items-center gap-1 shrink-0 ml-2">
-                      {isCompleted ? (
-                        <div className="inline-flex items-center gap-1 rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-extrabold text-emerald-400 select-none shadow-sm">
-                          <Check className="h-3 w-3 text-emerald-400 stroke-[3px]" />
-                          <span>Concluído</span>
-                        </div>
-                      ) : (
+                      {todo.is_deleted ? (
                         <Button
                           variant="ghost"
-                          size="icon"
-                          className="text-slate-500 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-xl h-8 w-8 transition-colors"
-                          onClick={() => handleStartEdit(todo.id, todo.title)}
+                          size="sm"
+                          className="text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 rounded-xl px-2.5 py-1 text-xs font-bold transition-all flex items-center gap-1.5 h-8"
+                          onClick={() => {
+                            const confirmed = window.confirm("Deseja restaurar esta tarefa para a sua lista ativa?");
+                            if (!confirmed) return;
+                            updateTodo.mutate({ id: todo.id, is_deleted: false });
+                          }}
                         >
-                          <Edit3 className="h-3.5 w-3.5" />
+                          <RotateCcw className="h-3.5 w-3.5" />
+                          <span>Restaurar</span>
                         </Button>
-                      )}
+                      ) : (
+                        <>
+                          {isCompleted ? (
+                            <div className="inline-flex items-center gap-1 rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-extrabold text-emerald-400 select-none shadow-sm">
+                              <Check className="h-3 w-3 text-emerald-400 stroke-[3px]" />
+                              <span>Concluído</span>
+                            </div>
+                          ) : (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="text-slate-500 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-xl h-8 w-8 transition-colors"
+                              onClick={() => handleStartEdit(todo.id, todo.title)}
+                            >
+                              <Edit3 className="h-3.5 w-3.5" />
+                            </Button>
+                          )}
 
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="text-slate-500 hover:text-red-400 hover:bg-red-500/10 rounded-xl h-8 w-8 transition-colors"
-                        onClick={() => {
-                          const confirmed = window.confirm("Excluir esta atividade do seu fluxo de tarefas?");
-                          if (!confirmed) return;
-                          deleteTodo.mutate(todo.id);
-                        }}
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="text-slate-500 hover:text-red-400 hover:bg-red-500/10 rounded-xl h-8 w-8 transition-colors"
+                            onClick={() => {
+                              const confirmed = window.confirm("Excluir esta atividade do seu fluxo de tarefas?");
+                              if (!confirmed) return;
+                              deleteTodo.mutate(todo.id);
+                            }}
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </Button>
+                        </>
+                      )}
                     </div>
                   )}
                 </div>
